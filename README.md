@@ -1,6 +1,8 @@
-# domain-join-champ
+# scripts
 
-## how to run the script
+## domain-join-champ.ps1
+
+### how to run the script
 
 ```ps1
 Set-ExecutionPolicy Unrestricted -Scope Process
