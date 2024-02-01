@@ -1,4 +1,4 @@
- $global:domain_user = ""
+$global:domain_user = ""
 $global:domain = ""
 $global:domain_controller = ""
 $organizational_units = @()
