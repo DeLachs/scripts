@@ -27,7 +27,7 @@ USER: str = args[opts.index("-u")]
 TOKEN: str = args[opts.index("-t")]
 PATH: str = args[opts.index("-p")].removesuffix("/")
 TODAY = date.today()
-KEEP_TIME: int = int(args[opts.index("-k")]) * 24 * 60 * 60
+KEEP_TIME_IN_SECONDS: int = int(args[opts.index("-k")]) * 24 * 60 * 60
 HEADERS: dict[str,str] = {
   "Accept": "application/vnd.github+json",
   "Authorization": f"Bearer {TOKEN}",
@@ -49,8 +49,11 @@ for repo in repositories:
   repo_local_name = repo.removeprefix(f"{USER}/")
   subprocess.run(["git", "clone", "--mirror", f"https://{USER}:{TOKEN}@github.com/{repo}.git", f"{PATH}/temp/{repo_local_name}.git"])
   shutil.make_archive(f"{PATH}/{repo_local_name}.git-{TODAY}", "zip", f"{PATH}/temp/{repo_local_name}.git")
-  # Delete old backups.
-  if (time.time() - os.stat(f"{PATH}/{repo_local_name}.git-{TODAY}.zip").st_mtime) > (KEEP_TIME * 24 * 60 * 60):
-    print(f"Deleting old backup: {PATH}/{repo_local_name}.git-{TODAY}.zip")
-    os.remove(f"{PATH}/{repo_local_name}.git-{TODAY}.zip")
 shutil.rmtree(f"{PATH}/temp")
+
+# Delete old backups.
+all_backups: list[str] = os.listdir(PATH)
+for f in all_backups:
+  if (time.time() - os.stat(f"{PATH}/{f}").st_mtime) > KEEP_TIME_IN_SECONDS:
+    print(f"Deleting old backup: {PATH}/{f}")
+    os.remove(f"{PATH}/{f}")
