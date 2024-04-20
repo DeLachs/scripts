@@ -36,10 +36,10 @@ HEADERS: dict[str,str] = {
 
 # Get all names of the repositories in a list.
 # Doesn't use typing because I'm lazy.
-repositories_json = requests.get(f"https://api.github.com/users/{USER}/repos", headers=HEADERS).json()
+repositories_json = requests.get(f"https://api.github.com/search/repositories?q=user:{USER}", headers=HEADERS).json()
 
 repositories: list[str] = []
-for repo in repositories_json:
+for repo in repositories_json["items"]:
   repositories.append(repo["full_name"])
 
 # Create temp directory for the cloned repos. Gets deleted after backup finished
